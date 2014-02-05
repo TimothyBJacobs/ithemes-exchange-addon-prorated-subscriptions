@@ -1,10 +1,12 @@
 <?php
 /**
- * 
+ *
  * @package ithemes-exchange-prorated-subscriptions
  * @subpackage
  * @since
  */
+require( 'lib/product-features/load.php' );
+
 class IT_Exchange_Prorated_Subscriptions {
 	const DOMAIN = "it-l10n-exchange-addon-prorated-subscriptions";
 
@@ -23,4 +25,5 @@ class IT_Exchange_Prorated_Subscriptions {
 		return $discount;
 	}
 }
+
 new IT_Exchange_Prorated_Subscriptions();
