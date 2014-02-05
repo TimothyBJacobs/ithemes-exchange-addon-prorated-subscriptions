@@ -6,6 +6,8 @@
  * @since
  */
 class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
+	public $feature_slug = "prorated-subscriptions";
+
 	public function __construct() {
 		if ( is_admin() ) {
 			add_action( 'load-post-new.php', array( $this, 'init_feature_metaboxes' ) );
@@ -13,10 +15,10 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 			add_action( 'it_exchange_save_product', array( $this, 'save_feature_on_product_save' ) );
 		}
 		add_action( 'it_exchange_enabled_addons_loaded', array( $this, 'add_feature_support_to_product_types' ) );
-		add_action( 'it_exchange_update_product_feature_prorated-subscriptions', array( $this, 'save_feature' ), 9, 3 );
-		add_filter( 'it_exchange_get_product_feature_prorated-subscriptions', array( $this, 'get_feature' ), 9, 3 );
-		add_filter( 'it_exchange_product_has_feature_prorated-subscriptions', array( $this, 'product_has_feature' ), 9, 2 );
-		add_filter( 'it_exchange_product_supports_feature_prorated-subscriptions', array( $this, 'product_supports_feature' ), 9, 2 );
+		add_action( "it_exchange_update_product_feature_{$this->feature_slug}", array( $this, 'save_feature' ), 9, 3 );
+		add_filter( "it_exchange_get_product_feature_{$this->feature_slug}", array( $this, 'get_feature' ), 9, 3 );
+		add_filter( "it_exchange_product_has_feature_{$this->feature_slug}", array( $this, 'product_has_feature' ), 9, 2 );
+		add_filter( "it_exchange_product_supports_feature_{$this->feature_slug}", array( $this, 'product_supports_feature' ), 9, 2 );
 	}
 
 	/**
@@ -26,11 +28,11 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	 */
 	function add_feature_support_to_product_types() {
 		// Register the product feature
-		$slug = 'prorated-subscriptions';
+		$slug = $this->feature_slug;
 		$description = __( "Allows you to prorate subscriptions for a week, a month, or until a preset date.", IT_Exchange_Prorated_Subscriptions::DOMAIN );
 		it_exchange_register_product_feature( $slug, $description );
 
-		it_exchange_add_feature_support_to_product_type( 'prorated-subscriptions', 'membership-product-type' );
+		it_exchange_add_feature_support_to_product_type( $this->feature_slug, 'membership-product-type' );
 	}
 
 	/**
@@ -67,7 +69,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 			$product_type = it_exchange_get_product_type( $post );
 
 		if ( ! empty( $post_type ) && 'it_exchange_prod' === $post_type ) {
-			if ( ! empty( $product_type ) && it_exchange_product_type_supports_feature( $product_type, 'prorated-subscriptions' ) )
+			if ( ! empty( $product_type ) && it_exchange_product_type_supports_feature( $product_type, $this->feature_slug ) )
 				add_action( 'it_exchange_product_metabox_callback_' . $product_type, array( $this, 'register_metabox' ) );
 		}
 
@@ -82,7 +84,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	 * @return void
 	 */
 	function register_metabox() {
-		add_meta_box( 'it-exchange-product-feature-prorated-subscriptions', __( 'Prorated Subscriptions', IT_Exchange_Prorated_Subscriptions::DOMAIN ), array( $this, 'print_metabox' ), 'it_exchange_prod', 'it_exchange_advanced' );
+		add_meta_box( "it-exchange-product-feature-{$this->feature_slug}", __( 'Prorated Subscriptions', IT_Exchange_Prorated_Subscriptions::DOMAIN ), array( $this, 'print_metabox' ), 'it_exchange_prod', 'it_exchange_advanced' );
 	}
 
 	/**
@@ -103,7 +105,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 		$product = it_exchange_get_product( $post );
 
 		// Set the value of the feature for this product
-		$values = it_exchange_get_product_feature( $product->ID, 'prorated-subscriptions' );
+		$values = it_exchange_get_product_feature( $product->ID, $this->feature_slug );
 
 		if ( empty( $values['until-date'] ) ) {
 			$values['until-date'] = "";
@@ -120,6 +122,25 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 		<?php if ( $description ) : ?>
 			<p class="intro-description"><?php echo $description; ?></p>
 		<?php endif; ?>
+
+		<p>
+		    <label><?php _e( "Base discount on the number of days, weeks, or months between now and the date you are prorating to." ) ?></label>
+
+		    <label>
+		        <input type="radio" <?php checked( $values['round-type'], 'days' ); ?> id="it-exchange-product-feature-prorated-subscriptions[round-type]-days" name="it-exchange-product-feature-prorated-subscriptions[round-type]" value="days">
+			    <?php _e( "Days", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
+		    </label>
+
+		    <label>
+		        <input type="radio" <?php checked( $values['round-type'], 'weeks' ); ?> id="it-exchange-product-feature-prorated-subscriptions[round-type]-weeks" name="it-exchange-product-feature-prorated-subscriptions[round-type]" value="weeks">
+			    <?php _e( "Weeks", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
+		    </label>
+
+		    <label>
+		        <input type="radio" <?php checked( $values['round-type'], 'months' ); ?> id="it-exchange-product-feature-prorated-subscriptions[round-type]-months" name="it-exchange-product-feature-prorated-subscriptions[round-type]" value="months">
+			    <?php _e( "Months", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
+		    </label>
+	    </p>
 
 		<p>
 			<label for="it-exchange-product-feature-prorated-subscriptions[until-date]"><?php _e( 'Prorate Subscription Until', IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?></label>
@@ -149,14 +170,14 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 			return;
 
 		// Abort if this product type doesn't support this feature
-		if ( ! it_exchange_product_type_supports_feature( $product_type, 'prorated-subscriptions' ) || empty( $_POST['it-exchange-product-feature-prorated-subscriptions'] ) )
+		if ( ! it_exchange_product_type_supports_feature( $product_type, $this->feature_slug ) || empty( $_POST['it-exchange-product-feature-prorated-subscriptions'] ) )
 			return;
 
 		// If the value is empty (0), delete the key, otherwise save
-		if ( empty( $_POST['it-exchange-product-feature-prorated-subscriptions'] ) )
-			delete_post_meta( $product_id, '_it-exchange-product-feature-prorated-subscriptions' );
+		if ( empty( $_POST["it-exchange-product-feature-{$this->feature_slug}"] ) )
+			delete_post_meta( $product_id, "_it-exchange-product-feature-{$this->feature_slug}" );
 		else {
-			$post_data = $_POST['it-exchange-product-feature-prorated-subscriptions'];
+			$post_data = $_POST["it-exchange-product-feature-{$this->feature_slug}"];
 
 			$new_values = array();
 
@@ -184,9 +205,21 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 			}
 
 			/*
+			 * Check and sanitize the round type.
+			 */
+			$round_type = $post_data['round-type'];
+
+			$allowed_values = array( 'days', 'weeks', 'months' );
+
+			if ( in_array( $round_type, $allowed_values ) )
+				$new_values['round-type'] = $round_type;
+			else
+				$new_values['round-type'] = "";
+
+			/*
 			 * Save the data.
 			 */
-			it_exchange_update_product_feature( $product_id, 'prorated-subscriptions', $new_values );
+			it_exchange_update_product_feature( $product_id, $this->feature_slug, $new_values );
 		}
 	}
 
@@ -201,7 +234,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	 * @return boolean
 	 */
 	function save_feature( $product_id, $new_value ) {
-		update_post_meta( $product_id, '_it-exchange-product-feature-prorated-subscriptions', $new_value );
+		update_post_meta( $product_id, "_it-exchange-product-feature-{$this->feature_slug}", $new_value );
 
 		return true;
 	}
@@ -222,8 +255,8 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 		$editing_product = ( ! empty( $current_screen->id ) && 'it_exchange_prod' == $current_screen->id );
 
 		// Return the value if supported or on add/edit screen
-		if ( it_exchange_product_supports_feature( $product_id, 'prorated-subscriptions' ) || $editing_product )
-			return get_post_meta( $product_id, '_it-exchange-product-feature-prorated-subscriptions', true );
+		if ( it_exchange_product_supports_feature( $product_id, $this->feature_slug ) || $editing_product )
+			return get_post_meta( $product_id, "_it-exchange-product-feature-{$this->feature_slug}", true );
 
 		return false;
 	}
@@ -262,7 +295,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	function product_supports_feature( $result, $product_id ) {
 		// Does this product type support this feature?
 		$product_type = it_exchange_get_product_type( $product_id );
-		if ( ! it_exchange_product_type_supports_feature( $product_type, 'prorated-subscriptions' ) )
+		if ( ! it_exchange_product_type_supports_feature( $product_type, $this->feature_slug ) )
 			return false;
 
 		return true;
