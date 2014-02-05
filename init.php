@@ -16,6 +16,20 @@ class IT_Exchange_Prorated_Subscriptions {
 	public function __construct() {
 		add_filter( 'it_exchange_get_cart_product_base_price', array( $this, 'prorate_product' ), 9999, 3 );
 		add_action( 'it_exchange_add_transaction_success', array( $this, 'modify_renewal_time' ), 9999 );
+		add_action( 'it_exchange_super_widget_checkout_after_price_element', array( $this, 'add_prorated_label' ) );
+	}
+
+	/**
+	 * Display a label saying this price is prorated.
+	 */
+	public function add_prorated_label() {
+		global $post;
+		$product = it_exchange_get_product( $post );
+
+		if ( ! $this->is_valid_product_for_modification( $product ) )
+			return;
+
+		echo '<span class="it_exchange_payment_label" style="padding:5px;background:#ECECEC;border-radius:3px;font-size:9px;text-transform: uppercase;margin-left:5px;color:#02A302;">prorated</span>';
 	}
 
 	/**
@@ -48,7 +62,7 @@ class IT_Exchange_Prorated_Subscriptions {
 	 */
 	public function prorate_product( $db_base_price, $product, $format = true ) {
 
-		$db_base_price = self::remove_currency_format($db_base_price);
+		$db_base_price = self::remove_currency_format( $db_base_price );
 
 		if ( ! $db_product = it_exchange_get_product( $product['product_id'] ) )
 			return ( $format === true ) ? it_exchange_format_price( $db_base_price ) : $db_base_price;
