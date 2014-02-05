@@ -6,7 +6,7 @@
  * @since
  */
 class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
-	public $feature_slug = "prorated-subscriptions";
+	protected $feature_slug = "prorated-subscriptions";
 
 	public function __construct() {
 		if ( is_admin() ) {
