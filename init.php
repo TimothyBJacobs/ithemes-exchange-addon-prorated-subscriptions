@@ -14,7 +14,7 @@ class IT_Exchange_Prorated_Subscriptions {
 	 *
 	 */
 	public function __construct() {
-		add_filter( 'it_exchange_get_cart_product_base_price', array( $this, 'prorate_product' ), 10, 3 );
+		add_filter( 'it_exchange_get_cart_product_base_price', array( $this, 'prorate_product' ), 9999, 3 );
 		add_action( 'it_exchange_add_transaction_success', array( $this, 'modify_renewal_time' ), 9999 );
 	}
 
@@ -44,15 +44,17 @@ class IT_Exchange_Prorated_Subscriptions {
 	 * @param $product array
 	 * @param $format boolean
 	 *
-	 * @return int
+	 * @return float
 	 */
-	public function prorate_product( $db_base_price, $product, $format ) {
+	public function prorate_product( $db_base_price, $product, $format = true ) {
+
+		$db_base_price = self::remove_currency_format($db_base_price);
 
 		if ( ! $db_product = it_exchange_get_product( $product['product_id'] ) )
-			return $db_base_price;
+			return ( $format === true ) ? it_exchange_format_price( $db_base_price ) : $db_base_price;
 
 		if ( false === $this->is_valid_product_for_modification( $db_product ) )
-			return false;
+			return ( $format === true ) ? it_exchange_format_price( $db_base_price ) : $db_base_price;
 
 		$feature = it_exchange_get_product_feature( $db_product->ID, 'prorated-subscriptions' );
 
@@ -72,6 +74,9 @@ class IT_Exchange_Prorated_Subscriptions {
 				break;
 		}
 
+		if ( $format )
+			$db_base_price = it_exchange_format_price( $db_base_price );
+
 		return $db_base_price;
 	}
 
@@ -79,7 +84,7 @@ class IT_Exchange_Prorated_Subscriptions {
 	 * @param $price int
 	 * @param $target_date DateTime
 	 *
-	 * @return int
+	 * @return float
 	 */
 	protected function prorate_product_days( $price, $target_date ) {
 		$diff = $target_date->diff( new DateTime() );
@@ -100,7 +105,7 @@ class IT_Exchange_Prorated_Subscriptions {
 	 * @param $price int
 	 * @param $target_date DateTime
 	 *
-	 * @return int
+	 * @return float
 	 */
 	protected function prorate_product_weeks( $price, $target_date ) {
 		$diff = $target_date->diff( new DateTime() );
@@ -122,7 +127,7 @@ class IT_Exchange_Prorated_Subscriptions {
 	 * @param $price int
 	 * @param $target_date DateTime
 	 *
-	 * @return int
+	 * @return float
 	 */
 	protected function prorate_product_months( $price, $target_date ) {
 		$diff = $target_date->diff( new DateTime() );
@@ -149,6 +154,11 @@ class IT_Exchange_Prorated_Subscriptions {
 		if ( ! it_exchange_product_supports_feature( $product->ID, 'prorated-subscriptions' ) )
 			$valid = false;
 
+		$features = it_exchange_get_product_feature( $product->ID, 'prorated-subscriptions' );
+
+		if ( ! isset( $features['enable-prorate'] ) || $features['enable-prorate'] !== true )
+			$valid = false;
+
 		if ( ! it_exchange_product_supports_feature( $product->ID, 'recurring-payments' ) )
 			$valid = false;
 
@@ -156,6 +166,29 @@ class IT_Exchange_Prorated_Subscriptions {
 			$valid = false;
 
 		return apply_filters( 'it_exchange_prorated_subscriptions_valid_product_for_modification', $valid, $product );
+	}
+
+	/**
+	 * Remove the currency format.
+	 *
+	 * @param $string string
+	 *
+	 * @return int
+	 */
+	public static function remove_currency_format( $string ) {
+		$before = $after = '';
+		$settings = it_exchange_get_option( 'settings_general' );
+		$currency = it_exchange_get_currency_symbol( $settings['default-currency'] );
+
+		if ( 'after' === $settings['currency-symbol-position'] )
+			$after = $currency;
+		else
+			$before = $currency;
+
+		$string = str_replace( $before, "", $string );
+		$string = str_replace( $after, "", $string );
+
+		return (int) $string;
 	}
 }
 

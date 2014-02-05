@@ -108,8 +108,9 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 		$values = it_exchange_get_product_feature( $product->ID, $this->feature_slug );
 
 		$defaults = array(
-			'until-date' => "",
-			'round-type' => "months"
+			'until-date'     => "",
+			'round-type'     => "months",
+			'enable-prorate' => ''
 		);
 
 		$values = ITUtility::merge_defaults( $values, $defaults );
@@ -131,28 +132,53 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 		<?php endif; ?>
 
 		<p>
-		    <label><?php _e( "Base discount on the number of days, weeks, or months between now and the date you are prorating to." ) ?></label>
-
 		    <label>
-		        <input type="radio" <?php checked( $values['round-type'], 'days' ); ?> id="it-exchange-product-feature-prorated-subscriptions[round-type]-days" name="it-exchange-product-feature-prorated-subscriptions[round-type]" value="days">
-			    <?php _e( "Days", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
-		    </label>
-
-		    <label>
-		        <input type="radio" <?php checked( $values['round-type'], 'weeks' ); ?> id="it-exchange-product-feature-prorated-subscriptions[round-type]-weeks" name="it-exchange-product-feature-prorated-subscriptions[round-type]" value="weeks">
-			    <?php _e( "Weeks", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
-		    </label>
-
-		    <label>
-		        <input type="radio" <?php checked( $values['round-type'], 'months' ); ?> id="it-exchange-product-feature-prorated-subscriptions[round-type]-months" name="it-exchange-product-feature-prorated-subscriptions[round-type]" value="months">
-			    <?php _e( "Months", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
+			    <input type="checkbox" id="prorate-subscriptions-options-enable" name="it-exchange-product-feature-prorated-subscriptions[enable-prorate]" <?php checked( $values['enable-prorate'] ); ?>>
+			    <?php _e( "Enable prorating for this product?", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
 		    </label>
 	    </p>
 
-		<p>
-			<label for="it-exchange-product-feature-prorated-subscriptions[until-date]"><?php _e( 'Prorate Subscription Until', IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?></label>
-			<input type="text" class="datepicker" id="it-exchange-product-feature-prorated-subscriptions[until-date]" name="it-exchange-product-feature-prorated-subscriptions[until-date]" value="<?php esc_attr_e( $values['until-date'] ); ?>"/>
-		</p>
+		<div class="<?php if ( $values['enable-prorate'] !== true ) echo "hide-if-js"; ?>" id="prorate-subscriptions-options">
+			<p>
+			    <label><?php _e( "Base discount on the number of days, weeks, or months between now and the date you are prorating to." ) ?></label>
+
+			    <label>
+			        <input type="radio" <?php checked( $values['round-type'], 'days' ); ?> id="it-exchange-product-feature-prorated-subscriptions[round-type]-days" name="it-exchange-product-feature-prorated-subscriptions[round-type]" value="days">
+				    <?php _e( "Days", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
+			    </label>
+
+			    <label>
+			        <input type="radio" <?php checked( $values['round-type'], 'weeks' ); ?> id="it-exchange-product-feature-prorated-subscriptions[round-type]-weeks" name="it-exchange-product-feature-prorated-subscriptions[round-type]" value="weeks">
+				    <?php _e( "Weeks", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
+			    </label>
+
+			    <label>
+			        <input type="radio" <?php checked( $values['round-type'], 'months' ); ?> id="it-exchange-product-feature-prorated-subscriptions[round-type]-months" name="it-exchange-product-feature-prorated-subscriptions[round-type]" value="months">
+				    <?php _e( "Months", IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?>
+			    </label>
+		    </p>
+
+			<p>
+				<label for="it-exchange-product-feature-prorated-subscriptions[until-date]"><?php _e( 'Prorate Subscription Until', IT_Exchange_Prorated_Subscriptions::DOMAIN ); ?></label>
+				<input type="text" class="datepicker" id="it-exchange-product-feature-prorated-subscriptions[until-date]" name="it-exchange-product-feature-prorated-subscriptions[until-date]" value="<?php esc_attr_e( $values['until-date'] ); ?>"/>
+			</p>
+
+		</div>
+
+		<script type="text/javascript">
+			jQuery( document ).ready( function ( $ ) {
+				$( "#prorate-subscriptions-options-enable" ).click( function () {
+					var options = $( "#prorate-subscriptions-options" );
+
+					console.log(this);
+
+					if ( $(this).attr( 'checked' ) == 'checked' )
+						options.removeClass( 'hide-if-js' ).show();
+					else
+						options.hide();
+				} );
+			} );
+		</script>
 
 		<input type="hidden" name="it_exchange_prorate_subscription_date_picker_format" value="<?php echo $jquery_date_format; ?>"/>
 	<?php
@@ -222,6 +248,14 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 				$new_values['round-type'] = $round_type;
 			else
 				$new_values['round-type'] = "";
+
+			/*
+			 * Check and sanitize enabled prorate
+			 */
+			if ( isset( $post_data['enable-prorate'] ) && $post_data['enable-prorate'] == 'on' )
+				$new_values['enable-prorate'] = true;
+			else
+				$new_values['enable-prorate'] = false;
 
 			/*
 			 * Save the data.
