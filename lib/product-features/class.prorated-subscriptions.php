@@ -107,6 +107,13 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 		// Set the value of the feature for this product
 		$values = it_exchange_get_product_feature( $product->ID, $this->feature_slug );
 
+		$defaults = array(
+			'until-date' => "",
+			'round-type' => "months"
+		);
+
+		$values = ITUtility::merge_defaults( $values, $defaults );
+
 		if ( empty( $values['until-date'] ) ) {
 			$values['until-date'] = "";
 		}
