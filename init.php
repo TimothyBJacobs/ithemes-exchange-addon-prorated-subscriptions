@@ -17,14 +17,14 @@ class IT_Exchange_Prorated_Subscriptions {
 		add_filter( 'it_exchange_get_cart_product_base_price', array( $this, 'prorate_product' ), 9999, 3 );
 		add_action( 'it_exchange_add_transaction_success', array( $this, 'modify_renewal_time' ), 9999 );
 		add_action( 'it_exchange_super_widget_checkout_after_price_element', array( $this, 'add_prorated_label' ) );
+		add_action( 'it_exchange_super_widget_cart_after_item_price_element', array( $this, 'add_prorated_label' ) );
 	}
 
 	/**
 	 * Display a label saying this price is prorated.
 	 */
 	public function add_prorated_label() {
-		global $post;
-		$product = it_exchange_get_product( $post );
+		$product = $GLOBALS['it_exchange']['product'];
 
 		if ( ! $this->is_valid_product_for_modification( $product ) )
 			return;
