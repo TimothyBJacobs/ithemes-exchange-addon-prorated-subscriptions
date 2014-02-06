@@ -1,13 +1,25 @@
 <?php
 /**
  *
- * @package ithemes-exchange-prorated-subscriptions
- * @subpackage
- * @since
+ * @package iThemes Exchange Prorated Subscriptions Addon
+ * @subpackage Product Features
+ * @since 1.0
  */
 class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
+	/**
+	 * The slug used for this product feature.
+	 *
+	 * @var string
+	 */
 	protected $feature_slug = "prorated-subscriptions";
 
+	/**
+	 * Constructor for objects of type IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature.
+	 *
+	 * Registers all required actions and filters.
+	 *
+	 * @since 1.0
+	 */
 	public function __construct() {
 		if ( is_admin() ) {
 			add_action( 'load-post-new.php', array( $this, 'init_feature_metaboxes' ) );
@@ -24,7 +36,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	/**
 	 * Register the product feature and add it to enabled product-type addons
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 */
 	function add_feature_support_to_product_types() {
 		// Register the product feature
@@ -38,7 +50,8 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	/**
 	 * Register's the metabox for any product type that supports the feature
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
+	 *
 	 * @return void
 	 */
 	function init_feature_metaboxes() {
@@ -80,7 +93,8 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	 *
 	 * Hooked to it_exchange_product_metabox_callback_[product-type] where product type supports the feature
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
+	 *
 	 * @return void
 	 */
 	function register_metabox() {
@@ -90,9 +104,9 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	/**
 	 * This echos the feature metabox.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
-	 * @param $post
+	 * @param $post WP_Post
 	 *
 	 * @return void
 	 */
@@ -187,7 +201,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	/**
 	 * This saves the value
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -283,7 +297,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	/**
 	 * Return the product's features
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
 	 * @param mixed $existing the values passed in by the WP Filter API. Ignored here.
 	 * @param integer $product_id the WordPress post ID
@@ -305,7 +319,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	/**
 	 * Does the product have the feature?
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
 	 * @param mixed $result Not used by core
 	 * @param integer $product_id
@@ -326,7 +340,7 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 	 * This is different than if it has the feature, a product can
 	 * support a feature but might not have the feature set.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
 	 * @param mixed $result Not used by core
 	 * @param integer $product_id

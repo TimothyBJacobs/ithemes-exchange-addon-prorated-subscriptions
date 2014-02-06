@@ -3,7 +3,7 @@
  * Plugin Name: iThemes Exchange - Prorated Subscriptions Add-on
  * Plugin URI: http://ironbounddesigns.com
  * Description: Allows you to prorate subscriptions for a week, a month, or until a preset date.
- * Version: 0.1
+ * Version: 1.0
  * Author: Iron Bound Designs
  * Author URI: http://ironbounddesigns.com
  * License: GPL2
@@ -14,7 +14,7 @@ define( 'ITE_PRORATED_SUBSCRIPTIONS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 /**
  * This registers our plugin as a membership add-on
  *
- * @since 1.0.0
+ * @since 1.0
  *
  * @return void
  */
@@ -39,7 +39,7 @@ add_action( 'it_exchange_register_addons', 'it_exchange_register_prorated_subscr
  * Loads the translation data for WordPress
  *
  * @uses load_plugin_textdomain()
- * @since 1.0.0
+ * @since 1.0
  * @return void
  */
 function it_exchange_prorated_subscription_set_textdomain() {

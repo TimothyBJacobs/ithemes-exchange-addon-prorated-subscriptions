@@ -9,7 +9,7 @@ class IT_Exchange_Prorated_Subscriptions {
 	const DOMAIN = "it-l10n-exchange-addon-prorated-subscriptions";
 
 	/**
-	 *
+	 * Constructor for IT_Exchange_Prorated_Subscriptions objects.
 	 */
 	public function __construct() {
 		add_filter( 'it_exchange_get_cart_product_base_price', array( $this, 'prorate_product' ), 9999, 3 );
@@ -31,7 +31,13 @@ class IT_Exchange_Prorated_Subscriptions {
 	}
 
 	/**
+	 * Modifies the time that an subscription should be renewed.
+	 *
+	 * It is set to the until date specified in the features metabox.
+	 *
 	 * @param $transaction_id int
+	 *
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -52,11 +58,15 @@ class IT_Exchange_Prorated_Subscriptions {
 	}
 
 	/**
+	 * Apply the actual price discount to the product.
+	 *
 	 * @param $db_base_price int
 	 * @param $product array
 	 * @param $format boolean
 	 *
-	 * @return float
+	 * @since 1.0
+	 *
+	 * @return float/string
 	 */
 	public function prorate_product( $db_base_price, $product, $format = true ) {
 
@@ -93,8 +103,12 @@ class IT_Exchange_Prorated_Subscriptions {
 	}
 
 	/**
+	 * Applies discount based on number of days.
+	 *
 	 * @param $price int
 	 * @param $target_date DateTime
+	 *
+	 * @since 1.0
 	 *
 	 * @return float
 	 */
@@ -114,8 +128,12 @@ class IT_Exchange_Prorated_Subscriptions {
 	}
 
 	/**
+	 * Applies discount based on number of weeks.
+	 *
 	 * @param $price int
 	 * @param $target_date DateTime
+	 *
+	 * @since 1.0
 	 *
 	 * @return float
 	 */
@@ -136,8 +154,12 @@ class IT_Exchange_Prorated_Subscriptions {
 	}
 
 	/**
+	 * Apples discount based on number of months.
+	 *
 	 * @param $price int
 	 * @param $target_date DateTime
+	 *
+	 * @since 1.0
 	 *
 	 * @return float
 	 */
@@ -156,7 +178,11 @@ class IT_Exchange_Prorated_Subscriptions {
 	}
 
 	/**
+	 * Determine if a product should be prorated.
+	 *
 	 * @param $product IT_Exchange_Product
+	 *
+	 * @since 1.0
 	 *
 	 * @return bool
 	 */
@@ -185,7 +211,9 @@ class IT_Exchange_Prorated_Subscriptions {
 	 *
 	 * @param $string string
 	 *
-	 * @return int
+	 * @since 1.0
+	 *
+	 * @return float
 	 */
 	public static function remove_currency_format( $string ) {
 		$before = $after = '';
@@ -200,7 +228,7 @@ class IT_Exchange_Prorated_Subscriptions {
 		$string = str_replace( $before, "", $string );
 		$string = str_replace( $after, "", $string );
 
-		return (int) $string;
+		return (float) $string;
 	}
 }
 
