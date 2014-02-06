@@ -12,7 +12,7 @@ define( 'ITE_PRORATED_SUBSCRIPTIONS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
 
 /**
- * This registers our plugin as a membership addon
+ * This registers our plugin as a membership add-on
  *
  * @since 1.0.0
  *
