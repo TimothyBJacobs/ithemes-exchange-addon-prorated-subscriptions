@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  * @package iThemes Exchange Prorated Subscriptions Addon
  * @subpackage Core
  * @since 1.0
@@ -219,6 +219,8 @@ class IT_Exchange_Prorated_Subscriptions {
 		$before = $after = '';
 		$settings = it_exchange_get_option( 'settings_general' );
 		$currency = it_exchange_get_currency_symbol( $settings['default-currency'] );
+		$decimal = $settings['currency-decimals-separator'];
+		$thousands = $settings['currency-thousands-separator'];
 
 		if ( 'after' === $settings['currency-symbol-position'] )
 			$after = $currency;
@@ -227,6 +229,8 @@ class IT_Exchange_Prorated_Subscriptions {
 
 		$string = str_replace( $before, "", $string );
 		$string = str_replace( $after, "", $string );
+		$string = str_replace( $thousands, "", $string );
+		$string = str_replace( $decimal, ".", $string );
 
 		return (float) $string;
 	}
