@@ -184,8 +184,6 @@ class IT_Exchange_Addon_Prorated_Subscriptions_Product_Feature {
 				$( "#prorate-subscriptions-options-enable" ).click( function () {
 					var options = $( "#prorate-subscriptions-options" );
 
-					console.log(this);
-
 					if ( $(this).attr( 'checked' ) == 'checked' )
 						options.removeClass( 'hide-if-js' ).show();
 					else
