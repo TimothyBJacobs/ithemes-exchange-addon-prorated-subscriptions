@@ -1,4 +1,4 @@
-# Prorated Subscriptions Addon for iThemes Exchange
+=== Prorated Subscriptions Addon for iThemes Exchange ===
 Contributors: TimothyBlynJacobs
 Donate link: http://ironbounddesigns.com/
 Tags: iThemes Exchange, addon, ecommerce, discount
@@ -10,7 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Prorated Subscriptions is an iThemes Exchange add-on that allows you to prorate subscriptions until a preset date.
 
-## Description
+== Description ==
 
 Prorated subscriptions allows you to prorate subscriptions until a preset date.
 
@@ -18,14 +18,15 @@ For example, if you have a yearly membership that costs $365 and renews January 
 
 Requires iThemes Exchange and the Recurring Payments Addon.
 
-## Installation
+
+== Installation ==
 
 1. Download and unzip the latest release zip file.
 2. If you use the WordPress plugin uploader to install this plugin skip to step 4.
 3. Upload the entire plugin directory to your `/wp-content/plugins/` directory.
 4. Activate the plugin through the 'Plugins' menu in WordPress Administration.
 
-## Changelog
+== Changelog ==
 
-### 1.0
+= 1.0 =
 * Initial Release
