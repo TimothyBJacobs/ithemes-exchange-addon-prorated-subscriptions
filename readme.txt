@@ -8,7 +8,7 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-iThemes Exchange add-on that allows you to prorate subscriptions until a preset date.
+Prorated Subscriptions is an iThemes Exchange add-on that allows you to prorate subscriptions until a preset date.
 
 == Description ==
 
