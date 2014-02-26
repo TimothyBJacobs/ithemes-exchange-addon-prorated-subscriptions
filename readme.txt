@@ -27,6 +27,8 @@ Requires iThemes Exchange and the Recurring Payments Addon.
 4. Activate the plugin through the 'Plugins' menu in WordPress Administration.
 
 == Changelog ==
+= 1.1 =
+* Bug Fix: Wrong value when prorating based on days or weeks
 
 = 1.0 =
 * Initial Release

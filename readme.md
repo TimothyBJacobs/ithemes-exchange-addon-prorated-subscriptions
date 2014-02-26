@@ -27,5 +27,8 @@ Requires iThemes Exchange and the Recurring Payments Addon.
 
 ## Changelog
 
+### 1.1
+* Bug Fix: Wrong value when prorating based on days or weeks
+
 ### 1.0
 * Initial Release

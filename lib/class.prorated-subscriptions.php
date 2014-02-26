@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @package iThemes Exchange Prorated Subscriptions Addon
@@ -22,7 +23,7 @@ class IT_Exchange_Prorated_Subscriptions {
 	 * Display a label saying this price is prorated.
 	 */
 	public function add_prorated_label() {
-		$product = $GLOBALS['it_exchange']['product'];
+		$product = $GLOBALS[ 'it_exchange' ][ 'product' ];
 
 		if ( ! $this->is_valid_product_for_modification( $product ) )
 			return;
@@ -47,13 +48,13 @@ class IT_Exchange_Prorated_Subscriptions {
 		$cart_object = get_post_meta( $transaction->ID, '_it_exchange_cart_object', true );
 
 		foreach ( $cart_object->products as $product ) {
-			$product = it_exchange_get_product( $product['product_id'] );
+			$product = it_exchange_get_product( $product[ 'product_id' ] );
 			$feature = it_exchange_get_product_feature( $product->ID, 'prorated-subscriptions' );
 
 			if ( false === $this->is_valid_product_for_modification( $product ) )
 				continue;
 
-			$transaction->update_transaction_meta( 'subscription_expires_' . $product->ID, $feature['until-date'] );
+			$transaction->update_transaction_meta( 'subscription_expires_' . $product->ID, $feature[ 'until-date' ] );
 		}
 	}
 
@@ -72,7 +73,7 @@ class IT_Exchange_Prorated_Subscriptions {
 
 		$db_base_price = self::remove_currency_format( $db_base_price );
 
-		if ( ! $db_product = it_exchange_get_product( $product['product_id'] ) )
+		if ( ( $db_product = it_exchange_get_product( $product[ 'product_id' ] ) ) === false )
 			return ( $format === true ) ? it_exchange_format_price( $db_base_price ) : $db_base_price;
 
 		if ( false === $this->is_valid_product_for_modification( $db_product ) )
@@ -80,10 +81,10 @@ class IT_Exchange_Prorated_Subscriptions {
 
 		$feature = it_exchange_get_product_feature( $db_product->ID, 'prorated-subscriptions' );
 
-		$epoch = $feature['until-date'];
+		$epoch = $feature[ 'until-date' ];
 		$target_date = new DateTime( "@$epoch" );
 
-		switch ( $feature['round-type'] ) {
+		switch ( $feature[ 'round-type' ] ) {
 			case 'days' :
 				$db_base_price = $this->prorate_product_days( $db_base_price, $target_date );
 				break;
@@ -114,7 +115,7 @@ class IT_Exchange_Prorated_Subscriptions {
 	 */
 	protected function prorate_product_days( $price, $target_date ) {
 		$diff = $target_date->diff( new DateTime() );
-		$days_before_date = $diff->d;
+		$days_before_date = $diff->days;
 
 		if ( false == $days_before_date )
 			return $price;
@@ -139,7 +140,7 @@ class IT_Exchange_Prorated_Subscriptions {
 	 */
 	protected function prorate_product_weeks( $price, $target_date ) {
 		$diff = $target_date->diff( new DateTime() );
-		$days_before_date = $diff->d;
+		$days_before_date = $diff->days;
 
 		$weeks_before_date = round( $days_before_date / 7 );
 
@@ -194,7 +195,7 @@ class IT_Exchange_Prorated_Subscriptions {
 
 		$features = it_exchange_get_product_feature( $product->ID, 'prorated-subscriptions' );
 
-		if ( ! isset( $features['enable-prorate'] ) || $features['enable-prorate'] !== true )
+		if ( ! isset( $features[ 'enable-prorate' ] ) || $features[ 'enable-prorate' ] !== true )
 			$valid = false;
 
 		if ( ! it_exchange_product_supports_feature( $product->ID, 'recurring-payments' ) )
@@ -218,11 +219,11 @@ class IT_Exchange_Prorated_Subscriptions {
 	public static function remove_currency_format( $string ) {
 		$before = $after = '';
 		$settings = it_exchange_get_option( 'settings_general' );
-		$currency = it_exchange_get_currency_symbol( $settings['default-currency'] );
-		$decimal = $settings['currency-decimals-separator'];
-		$thousands = $settings['currency-thousands-separator'];
+		$currency = it_exchange_get_currency_symbol( $settings[ 'default-currency' ] );
+		$decimal = $settings[ 'currency-decimals-separator' ];
+		$thousands = $settings[ 'currency-thousands-separator' ];
 
-		if ( 'after' === $settings['currency-symbol-position'] )
+		if ( 'after' === $settings[ 'currency-symbol-position' ] )
 			$after = $currency;
 		else
 			$before = $currency;
